@@ -1,20 +1,19 @@
 version: 2.1
-
-jobs:
-  mabl_test:
-    docker:
-      - image: circleci/node:latest
-    steps:
-      - checkout
-      - run:
-          name: Run Mabl Tests
-          command: |
-            npm install -g @mablhq/mabl-cli
-            mabl login --api-key RgYhOfX3bSVXo8VweVZ7GQ
-            mabl tests run --environment-id <your-environment-id>
-
+orbs:
+  trigger-tests: mabl/trigger-tests@1.0.8
+# Example .circleci/config.yml snippet
 workflows:
-  version: 2
-  mabl_test_workflow:
+  build-and-test:
     jobs:
-      - mabl_test
+      - trigger-mabl-tests:
+          context: mabl-api-key # Optional: Use a context for security
+          filters:
+            branches:
+              only: [main, develop]
+          # Example: Trigger all tests for a specific application and environment
+          mabl-trigger-tests:
+  
+            environment-id: "niIn0o7r5dqEA4GdaK2hGQ-e"
+            # OR use labels:
+            # plan-labels: "regression,smoke-test"
+            await-completion: true # Wait for tests to finish before proceeding
